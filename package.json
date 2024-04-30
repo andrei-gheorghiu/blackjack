@@ -3,6 +3,13 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "license": "MIT",
+  "repository": "https://github.com/andrei-gheorghiu/blackjack",
+  "author": {
+    "name": "Andrei Gheorghiu",
+    "email": "arhicub@gmail.com",
+    "url": "https://stackoverflow.com/users/1891677/tao"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
