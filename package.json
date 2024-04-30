@@ -14,7 +14,7 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore --fix src",
+    "lint": "eslint --ext .js,.cjs,.ts,.vue --ignore-path .gitignore --fix .",
     "format": "prettier .  --write",
     "test": "vitest",
     "coverage": "vitest run --coverage",

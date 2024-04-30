@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
+import type { CARD_COLOR, CARD_NAME } from './types'
 import App from './App.vue'
 import { StorybookDecorator } from '../.storybook/helpers.ts'
-import { CARD_COLOR, CARD_NAME } from './types'
 
 const meta = {
   title: 'App',

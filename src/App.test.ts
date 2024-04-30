@@ -121,15 +121,7 @@ describe('<App.vue />', () => {
 
   it('should lose when both bust', async () => {
     const { SJ, S5, S2, CJ, C8, C10, ...rest } = testCardIds
-    const wrapper = renderApp([
-      SJ,
-      S5,
-      S2,
-      CJ,
-      C8,
-      C10,
-      ...Object.values(rest)
-    ])
+    const wrapper = renderApp([SJ, S5, S2, CJ, C8, C10, ...Object.values(rest)])
     await findByText(/Hit/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Loss')

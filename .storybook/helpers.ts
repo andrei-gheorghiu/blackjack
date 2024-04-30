@@ -1,4 +1,5 @@
-import { BlackjackCard, CARD_COLOR, CARD_NAME } from '../src/types'
+import type { CARD_COLOR, CARD_NAME } from '../src/types'
+import { BlackjackCard } from '../src/types'
 import { DEALER, DEFAULT_STATE, useBlackJack } from '../src/store'
 import { pinia } from './preview.ts'
 import { nextTick } from 'vue'

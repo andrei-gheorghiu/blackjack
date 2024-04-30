@@ -61,15 +61,19 @@ const ids = [
 ]
 
 export const testCards = CARD_COLORS.map((color, colorIdx) =>
-  CARD_NAMES.map((name, nameIdx) =>
-    new BlackjackCard({
-      color,
-      name,
-      id: ids[colorIdx * CARD_NAMES.length + nameIdx]
-    })
+  CARD_NAMES.map(
+    (name, nameIdx) =>
+      new BlackjackCard({
+        color,
+        name,
+        id: ids[colorIdx * CARD_NAMES.length + nameIdx]
+      })
   )
 ).flat()
 
-export const testCardIds = Object.assign({}, ...testCards.map(card => ({
-  [card.color[0] + NAME_SYMBOL[card.name]]: card.id
-})))
+export const testCardIds = Object.assign(
+  {},
+  ...testCards.map((card) => ({
+    [card.color[0] + NAME_SYMBOL[card.name]]: card.id
+  }))
+)

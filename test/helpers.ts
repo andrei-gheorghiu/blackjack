@@ -1,4 +1,4 @@
-import { VueWrapper } from '@vue/test-utils'
+import type { VueWrapper } from '@vue/test-utils'
 
 export const findByText = (
   pattern: RegExp,

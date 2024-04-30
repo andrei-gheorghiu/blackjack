@@ -6,7 +6,7 @@
 
 #app-root {
   @apply min-h-screen flex items-center justify-center bg-[rgb(8,128,6)];
-  background: radial-gradient(ellipse at bottom, rgba(8,128,6,1) 0%, transparent);
+  @apply bg-table-b;
 }
 .blackjack-table {
   @apply aspect-square border-white/10 border-8 flex-grow mx-auto rounded-full;
@@ -17,15 +17,15 @@
   .rotator {
     @apply absolute w-0 h-1/2 top-1/2 overflow-visible;
     @apply flex items-end justify-center;
-    @apply transform rotate-[var(--player-rotate)];
-    transform-origin: top;
+    @apply transform rotate-[var(--player-rotate)] origin-top;
   }
   .player {
     @apply w-36 flex items-center justify-center flex-col overflow-visible;
     @apply transform rotate-[calc(0deg_-_var(--player-rotate))];
   }
   .name {
-    @apply whitespace-nowrap p-1 px-6 bg-black/10 rounded-sm mb-2 min-w-32 flex justify-center;
+    @apply whitespace-nowrap p-1 px-6 mb-2 min-w-32 bg-black/10 rounded-sm;
+    @apply flex justify-center;
     @apply text-sm;
     font-variant-caps: small-caps;
   }
@@ -60,5 +60,5 @@ button {
 }
 body:not(#_) {
   @apply m-0 p-0 bg-[rgb(8,128,6)];
-  background: radial-gradient(ellipse at top, rgba(8,128,6,1) 0, rgba(38,52,38,1));
+  @apply bg-table-t;
 }
