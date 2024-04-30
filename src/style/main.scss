@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'playing-card';
+
+#app-root {
+  @apply min-h-screen flex items-center justify-center bg-[rgb(8,128,6)];
+  background: radial-gradient(ellipse at bottom, rgba(8,128,6,1) 0%, transparent);
+}
+.blackjack-table {
+  @apply aspect-square border-white/10 border-8 flex-grow mx-auto rounded-full;
+  @apply max-w-[85%];
+  @apply sm:max-w-[70%];
+  @apply md:max-w-prose;
+  @apply relative flex items-center justify-center text-white my-10;
+  .rotator {
+    @apply absolute w-0 h-1/2 top-1/2 overflow-visible;
+    @apply flex items-end justify-center;
+    @apply transform rotate-[var(--player-rotate)];
+    transform-origin: top;
+  }
+  .player {
+    @apply w-36 flex items-center justify-center flex-col overflow-visible;
+    @apply transform rotate-[calc(0deg_-_var(--player-rotate))];
+  }
+  .name {
+    @apply whitespace-nowrap p-1 px-6 bg-black/10 rounded-sm mb-2 min-w-32 flex justify-center;
+    @apply text-sm;
+    font-variant-caps: small-caps;
+  }
+  .cards {
+    @apply pb-4;
+  }
+}
+.cards {
+  @apply flex;
+}
+.player-actions {
+  @apply h-0 overflow-visible flex min-w-32 items-center justify-between;
+}
+.game-result {
+  @apply h-0 overflow-visible text-4xl uppercase font-thin;
+}
+button {
+  @apply p-1 px-4 flex-1 border border-transparent mt-8;
+  @apply bg-white/10 uppercase text-sm bg-clip-padding;
+  &:first-child {
+    @apply rounded-l-sm;
+  }
+  &:last-child {
+    @apply rounded-r-sm;
+  }
+  & + button {
+    @apply -ml-px;
+  }
+  &:hover {
+    @apply bg-white/25 border-white;
+  }
+}
+body:not(#_) {
+  @apply m-0 p-0 bg-[rgb(8,128,6)];
+  background: radial-gradient(ellipse at top, rgba(8,128,6,1) 0, rgba(38,52,38,1));
+}

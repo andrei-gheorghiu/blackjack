@@ -1,0 +1,40 @@
+.playing-card {
+  @apply cursor-pointer overflow-visible relative text-black font-bold;
+  @apply -mr-[.75rem] -ml-[.75rem] sm:w-14 w-10;
+  @apply md:-mr-[1.5rem] md:-ml-[1.5rem] md:w-20;
+  transform: rotate(var(--angle));
+  box-sizing: content-box;
+  box-shadow: 0 1px 8px 0 rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 3px 3px -2px rgba(0,0,0,.12);
+  .HEARTS, .DIAMONDS {
+    @apply text-red-700;
+  }
+  .inner {
+    @apply transform-none bg-gray-50 rounded aspect-[var(--card-ratio)] p-[2px];
+    @apply md:p-[3px];
+  }
+  &.turned {
+    .inner {
+      @apply bg-white;
+    }
+  }
+  .card-face {
+    @apply relative flex justify-between h-full;
+    > * {
+      @apply leading-[0.85] text-[length:.8rem];
+      @apply sm:text-[length:.9rem] md:text-[length:var(--card-font)];
+      &:first-child {
+        @apply flex justify-start;
+      }
+      &:last-child {
+        @apply absolute inset-0 flex items-center justify-center text-[3rem] leading-4 mt-3 md:mt-2;
+        @apply sm:text-[4.5rem] md:text-[6rem];
+      }
+    }
+  }
+  .card-back {
+    @apply bg-teal-700 h-full;
+  }
+  .card-symbol {
+    @apply flex flex-col justify-center items-center w-[.75rem] tracking-tighter;
+  }
+}
