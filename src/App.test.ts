@@ -29,7 +29,7 @@ let logSpy: any
 
  ***/
 
-const renderWrapper = (cardIds: string[]) => {
+const renderApp = (cardIds: string[]) => {
   const pinia = createTestingPinia({
     stubActions: false,
     createSpy: vi.fn
@@ -81,7 +81,7 @@ describe('<App.vue />', () => {
 
   it('should lose on dealer blackjack', async () => {
     const { C10, CJ, SA, SK, ...rest } = testCardIds
-    const wrapper = renderWrapper([C10, CJ, SA, SK, ...Object.values(rest)])
+    const wrapper = renderApp([C10, CJ, SA, SK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Loss')
@@ -89,23 +89,23 @@ describe('<App.vue />', () => {
 
   it('should win on player blackjack', async () => {
     const { SA, SK, C10, CJ, ...rest } = testCardIds
-    const wrapper = renderWrapper([SA, SK, C10, CJ, ...Object.values(rest)])
+    const wrapper = renderApp([SA, SK, C10, CJ, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should win on player blackjack with dealer on 21', async () => {
+  it('should win on player blackjack, even with dealer on 21', async () => {
     const { SA, SK, C10, C6, H5, ...rest } = testCardIds
-    const wrapper = renderWrapper([SA, SK, C10, C6, H5, ...Object.values(rest)])
+    const wrapper = renderApp([SA, SK, C10, C6, H5, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should draw when both dealer and player blackjack', async () => {
+  it('should draw when both blackjack', async () => {
     const { SA, SK, CA, CK, ...rest } = testCardIds
-    const wrapper = renderWrapper([SA, SK, CA, CK, ...Object.values(rest)])
+    const wrapper = renderApp([SA, SK, CA, CK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Draw')
@@ -113,15 +113,15 @@ describe('<App.vue />', () => {
 
   it('should lose when user busts', async () => {
     const { SJ, S5, S2, C2, C8, ...rest } = testCardIds
-    const wrapper = renderWrapper([SJ, S5, S2, C2, C8, ...Object.values(rest)])
+    const wrapper = renderApp([SJ, S5, S2, C2, C8, ...Object.values(rest)])
     await findByText(/Hit/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Loss')
   })
 
-  it('should lost when both player and dealer bust', async () => {
+  it('should lose when both bust', async () => {
     const { SJ, S5, S2, CJ, C8, C10, ...rest } = testCardIds
-    const wrapper = renderWrapper([
+    const wrapper = renderApp([
       SJ,
       S5,
       S2,
@@ -137,7 +137,7 @@ describe('<App.vue />', () => {
 
   it('should win when dealer busts', async () => {
     const { SJ, S5, S2, CJ, C10, ...rest } = testCardIds
-    const wrapper = renderWrapper([SJ, S5, S2, CJ, C10, ...Object.values(rest)])
+    const wrapper = renderApp([SJ, S5, S2, CJ, C10, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Win')
@@ -145,7 +145,7 @@ describe('<App.vue />', () => {
 
   it('should draw on equal value hands', async () => {
     const { SJ, S8, S2, CJ, C6, ...rest } = testCardIds
-    const wrapper = renderWrapper([SJ, S8, S2, CJ, C6, ...Object.values(rest)])
+    const wrapper = renderApp([SJ, S8, S2, CJ, C6, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Draw')
