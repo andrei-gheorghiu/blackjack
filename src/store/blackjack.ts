@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { BlackjackCard, CARD_COLORS, CARD_NAMES } from '../types'
-import { faker } from '@faker-js/faker'
 
 export interface BlackjackState {
   cards: BlackjackCard[]
@@ -87,7 +86,7 @@ export const useBlackJack = defineStore('blackjack', {
       this.dealCard()
     },
     shuffle() {
-      this.cardIds = faker.helpers.shuffle(this.cards.map(({ id }) => id))
+      this.cardIds = shuffle(this.cards.map(({ id }) => id))
     },
     dealCard() {
       this.currentPlayer.cards.push(this.nextCardId)
@@ -205,4 +204,13 @@ const getHandValues = (cards: BlackjackCard[]) =>
 const getHandValue = (cards: BlackjackCard[]) => {
   const totals = getHandValues(cards)
   return totals.length ? totals[totals.length - 1] : 0
+}
+
+function shuffle<T>(array: T[]): T[] {
+  const a = [...array]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
 }
