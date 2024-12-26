@@ -5,14 +5,14 @@
 @import 'playing-card';
 
 #app-root {
-  @apply min-h-screen flex items-center justify-center bg-[rgb(8,128,6)];
+  @apply min-h-screen flex items-center justify-center bg-[rgb(0,33,66)];
   @apply bg-table-b;
 }
 .blackjack-table {
-  @apply aspect-square border-white/10 border-8 flex-grow mx-auto rounded-full;
+  @apply aspect-square border-white/10 border flex-grow mx-auto rounded-full;
   @apply max-w-[85%];
   @apply sm:max-w-[70%];
-  @apply md:max-w-prose;
+  @apply md:max-w-[80ch];
   @apply relative flex items-center justify-center text-white my-10;
   .rotator {
     @apply absolute w-0 h-1/2 top-1/2 overflow-visible;
@@ -59,6 +59,6 @@ button {
   }
 }
 body:not(#_) {
-  @apply m-0 p-0 bg-[rgb(8,128,6)];
+  @apply m-0 p-0;
   @apply bg-table-t;
 }

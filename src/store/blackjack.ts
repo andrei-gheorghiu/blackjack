@@ -1,5 +1,18 @@
 import { defineStore } from 'pinia'
-import { BlackjackCard, CARD_COLORS, CARD_NAMES } from '../types'
+import {
+  BlackjackCard,
+  BlackjackPlayer,
+  CARD_COLORS,
+  CARD_NAMES
+} from '../types'
+import {
+  DEALER,
+  DECK_LENGTH,
+  DEFAULT_STATE,
+  MAX_HAND_VALUE,
+  MIN_DEALER_VALUE,
+  MIN_HAND_LENGTH
+} from '../constants'
 
 export interface BlackjackState {
   cards: BlackjackCard[]
@@ -10,30 +23,7 @@ export interface BlackjackState {
   hasGameEnded: boolean
 }
 
-export interface BlackjackPlayer {
-  cards: string[]
-  name: string
-  isDealer?: boolean
-}
-
-const MAX_HAND_VALUE = 21
-const MIN_HAND_LENGTH = 2
-const MIN_DEALER_VALUE = 17
-const DECKS = 1
-const DECK_LENGTH = CARD_COLORS.length * CARD_NAMES.length
-export const DEALER = {
-  name: 'Dealer',
-  cards: [],
-  isDealer: true
-}
-export const DEFAULT_STATE = {
-  cards: [],
-  cardIds: [],
-  decks: DECKS,
-  currentPlayerIndex: 0,
-  hasGameEnded: false
-}
-export const useBlackJack = defineStore('blackjack', {
+export const useBlackJack = defineStore('blackjack.ts', {
   state: (): BlackjackState => ({
     ...DEFAULT_STATE,
     players: [
@@ -96,7 +86,9 @@ export const useBlackJack = defineStore('blackjack', {
       } else {
         if (this.currentPlayer.isDealer) {
           if (this.hasGameEnded) {
-            !this.isBusted(this.currentPlayer) && this.playDealerTurn()
+            if (!this.isBusted(this.currentPlayer)) {
+              this.playDealerTurn()
+            }
           } else {
             this.advanceTurn()
           }
@@ -111,9 +103,11 @@ export const useBlackJack = defineStore('blackjack', {
         this.players.length
 
       if (this.currentPlayer.isDealer) {
-        !this.isDealing && this.playDealerTurn()
-      } else {
-        this.hasBlackjack(this.currentPlayer) && this.advanceTurn()
+        if (!this.isDealing) {
+          this.playDealerTurn()
+        }
+      } else if (this.hasBlackjack(this.currentPlayer)) {
+        this.advanceTurn()
       }
     },
     playDealerTurn() {
@@ -134,7 +128,7 @@ export const useBlackJack = defineStore('blackjack', {
     },
     isBusted() {
       return (player: BlackjackPlayer): boolean =>
-        !getHandValues(player.cards.map(useBlackJack().getCard)).length
+        getHandValue(player.cards.map(useBlackJack().getCard)) > MAX_HAND_VALUE
     },
     dealtCardIds(): string[] {
       return this.players.map((player) => player.cards).flat()
@@ -160,8 +154,9 @@ export const useBlackJack = defineStore('blackjack', {
       return (p: BlackjackPlayer): string => {
         const playerHand = this.getPlayerCards(p)
         switch (true) {
-          case !getHandValue(playerHand):
-          case getHandValue(playerHand) < getHandValue(dealerHand):
+          case getHandValue(playerHand) > MAX_HAND_VALUE:
+          case getHandValue(dealerHand) <= MAX_HAND_VALUE &&
+            getHandValue(playerHand) < getHandValue(dealerHand):
           case this.hasBlackjack(this.dealer) && !this.hasBlackjack(p):
             return 'Loss'
           case this.hasBlackjack(p) && !this.hasBlackjack(this.dealer):
@@ -199,11 +194,11 @@ const getHandValues = (cards: BlackjackCard[]) =>
         totals.flatMap((total) => card.values.map((value) => total + value)),
       [0]
     )
-    .filter((points) => points <= MAX_HAND_VALUE)
+    .reverse()
 
 const getHandValue = (cards: BlackjackCard[]) => {
   const totals = getHandValues(cards)
-  return totals.length ? totals[totals.length - 1] : 0
+  return totals.find((t) => t <= MAX_HAND_VALUE) || totals[totals.length - 1]
 }
 
 function shuffle<T>(array: T[]): T[] {

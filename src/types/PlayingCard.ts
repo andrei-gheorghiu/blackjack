@@ -1,4 +1,4 @@
-import { CARD_COLOR, CARD_NAME } from './playingCards.ts'
+import { CARD_COLOR, CARD_NAME } from './playing-card.ts'
 import { v4 } from 'uuid'
 
 export interface IPlayingCard {
@@ -6,6 +6,7 @@ export interface IPlayingCard {
   color: CARD_COLOR
   id?: string
 }
+
 export class PlayingCard implements IPlayingCard {
   name!: CARD_NAME
   color!: CARD_COLOR

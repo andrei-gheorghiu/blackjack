@@ -20,7 +20,7 @@ let logSpy: any
  *
  * As an example, here's how a storybook test would look like:
 
- describe('Draw blackjack', async () => {
+ describe('Draw blackjack.ts', async () => {
  const wrapper = mount(DrawBlackjack())
  await findByText(/Stand/, 'button', wrapper).trigger('click')
 
@@ -79,7 +79,7 @@ describe('<App.vue />', () => {
     expect(wrapper).toBeTruthy()
   })
 
-  it('should lose on dealer blackjack', async () => {
+  it('should lose on dealer blackjack.ts', async () => {
     const { C10, CJ, SA, SK, ...rest } = testCardIds
     const wrapper = renderApp([C10, CJ, SA, SK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -87,7 +87,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Loss')
   })
 
-  it('should win on player blackjack', async () => {
+  it('should win on player blackjack.ts', async () => {
     const { SA, SK, C10, CJ, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, C10, CJ, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -95,7 +95,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should win on player blackjack, even with dealer on 21', async () => {
+  it('should win on player blackjack.ts, even with dealer on 21', async () => {
     const { SA, SK, C10, C6, H5, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, C10, C6, H5, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -103,7 +103,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should draw when both blackjack', async () => {
+  it('should draw when both blackjack.ts', async () => {
     const { SA, SK, CA, CK, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, CA, CK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')

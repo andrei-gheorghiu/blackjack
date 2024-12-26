@@ -1,5 +1,5 @@
 import { IPlayingCard, PlayingCard } from './PlayingCard.ts'
-import { getBlackjackValues } from './blackjack.ts'
+import { getBlackjackValues } from '../utils'
 
 export class BlackjackCard extends PlayingCard {
   values: number[]

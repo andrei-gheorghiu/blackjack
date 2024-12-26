@@ -1,9 +1,9 @@
 <template>
-  <span v-html="COLOR_SYMBOL[card.color]" />
+  <span v-html="CardColors[card.color]" />
 </template>
 
 <script setup lang="ts">
-import { COLOR_SYMBOL, PlayingCard } from '../types'
+import { CardColors, PlayingCard } from '../types'
 
 defineProps({
   card: {
