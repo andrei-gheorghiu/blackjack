@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
+import { BlackjackCard, BlackjackPlayer } from '../types'
 import {
-  BlackjackCard,
-  BlackjackPlayer,
   CARD_COLORS,
-  CARD_NAMES
-} from '../types'
-import {
+  CARD_NAMES,
   DEALER,
   DECK_LENGTH,
   DEFAULT_STATE,
@@ -13,6 +10,7 @@ import {
   MIN_DEALER_VALUE,
   MIN_HAND_LENGTH
 } from '../constants'
+import { getHandValue, getHandValues, shuffle } from '../utils'
 
 export interface BlackjackState {
   cards: BlackjackCard[]
@@ -174,7 +172,7 @@ export const useBlackJack = defineStore('blackjack.ts', {
     },
     hasMaxHandValue() {
       return (p: BlackjackPlayer): boolean =>
-        getHandValue(this.getPlayerCards(p)) === MAX_HAND_VALUE
+        this.getPlayerHandValue(p) === MAX_HAND_VALUE
     },
     hasBlackjack() {
       return (p: BlackjackPlayer): boolean =>
@@ -186,26 +184,3 @@ export const useBlackJack = defineStore('blackjack.ts', {
     }
   }
 })
-
-const getHandValues = (cards: BlackjackCard[]) =>
-  cards
-    .reduce(
-      (totals, card) =>
-        totals.flatMap((total) => card.values.map((value) => total + value)),
-      [0]
-    )
-    .reverse()
-
-const getHandValue = (cards: BlackjackCard[]) => {
-  const totals = getHandValues(cards)
-  return totals.find((t) => t <= MAX_HAND_VALUE) || totals[totals.length - 1]
-}
-
-function shuffle<T>(array: T[]): T[] {
-  const a = [...array]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}

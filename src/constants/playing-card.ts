@@ -1,3 +1,5 @@
+import { CARD_COLOR, CARD_NAME } from '../types'
+
 export const CardNames = Object.freeze({
   ACE: 'A',
   TWO: '2',
@@ -13,6 +15,8 @@ export const CardNames = Object.freeze({
   QUEEN: 'Q',
   KING: 'K'
 })
+export const CARD_NAMES = Object.keys(CardNames) as CARD_NAME[]
+export const NAME_SYMBOLS = Object.values(CardNames)
 
 export const CardColors = Object.freeze({
   SPADES: '♠',
@@ -20,3 +24,7 @@ export const CardColors = Object.freeze({
   DIAMONDS: '♦',
   CLUBS: '♣'
 })
+export const CARD_COLORS = Object.keys(CardColors) as CARD_COLOR[]
+export const CARD_SYMBOLS = Object.values(CardColors)
+
+export const DECK_LENGTH = CARD_SYMBOLS.length * NAME_SYMBOLS.length

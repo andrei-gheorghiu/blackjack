@@ -6,7 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import { CardNames, CardColors, PlayingCard } from '../types'
+import { PlayingCard } from '../types'
+import { CardColors, CardNames } from '../constants'
 defineProps({
   card: {
     type: PlayingCard,
