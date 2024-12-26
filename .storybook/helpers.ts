@@ -1,8 +1,10 @@
+import { nextTick } from 'vue'
+
+import { DEALER, DEFAULT_STATE } from '../src/constants'
+import { useBlackJack } from '../src/store'
 import type { CARD_COLOR, CARD_NAME } from '../src/types'
 import { BlackjackCard } from '../src/types'
-import { DEALER, DEFAULT_STATE, useBlackJack } from '../src/store'
 import { pinia } from './preview.ts'
-import { nextTick } from 'vue'
 
 export const findCard = (
   [name, color]: [CARD_NAME, CARD_COLOR],
@@ -14,7 +16,7 @@ export const findCard = (
 }
 
 export const StorybookDecorator = (
-  story: any,
+  story: unknown,
   {
     args
   }: {

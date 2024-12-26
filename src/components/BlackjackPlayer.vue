@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+
 import { BlackjackPlayer, useBlackJack } from '../store'
 import PlayingCard from './PlayingCard.vue'
-import { storeToRefs } from 'pinia'
 
 defineProps({
   player: {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import BlackJackGame from './components/BlackjackGame.vue'
 import { reactive } from 'vue'
+
+import BlackJackGame from './components/BlackjackGame.vue'
 
 const cardSizes = reactive({
   '--card-font': '1.2rem',

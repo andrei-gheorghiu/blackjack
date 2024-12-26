@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+
 import { useBlackJack } from '../store'
 import BlackjackPlayer from './BlackjackPlayer.vue'
-import { onMounted } from 'vue'
 
 const { players, isDealing, hasGameEnded } = storeToRefs(useBlackJack())
 const { newGame } = useBlackJack()
 onMounted(() => {
-  isDealing.value && newGame()
+  if (isDealing.value) newGame()
 })
 const getPlayerAngle = (index: number, total: number) =>
   (360 / total) * (index + 1) + 180

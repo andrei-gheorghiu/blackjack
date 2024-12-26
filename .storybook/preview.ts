@@ -1,8 +1,9 @@
 import '../src/style/main.scss'
 import './sb.scss'
+
 import { type Preview, setup } from '@storybook/vue3'
-import { type App } from 'vue'
 import { createPinia } from 'pinia'
+import { type App } from 'vue'
 
 export const pinia = createPinia()
 

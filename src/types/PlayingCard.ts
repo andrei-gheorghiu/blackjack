@@ -1,5 +1,6 @@
-import { CARD_COLOR, CARD_NAME } from './playing-card.ts'
 import { v4 } from 'uuid'
+
+import { CARD_COLOR, CARD_NAME } from './playing-card.ts'
 
 export interface IPlayingCard {
   name: CARD_NAME

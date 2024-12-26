@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { BlackjackCard, BlackjackPlayer } from '../types'
+
 import {
   CARD_COLORS,
   CARD_NAMES,
@@ -10,6 +10,7 @@ import {
   MIN_DEALER_VALUE,
   MIN_HAND_LENGTH
 } from '../constants'
+import { BlackjackCard, BlackjackPlayer } from '../types'
 import { getHandValue, getHandValues, shuffle } from '../utils'
 
 export interface BlackjackState {
@@ -91,7 +92,7 @@ export const useBlackJack = defineStore('blackjack.ts', {
             this.advanceTurn()
           }
         } else {
-          this.isBusted(this.currentPlayer) && this.advanceTurn()
+          if (this.isBusted(this.currentPlayer)) this.advanceTurn()
         }
       }
     },

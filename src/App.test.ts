@@ -1,13 +1,14 @@
-import { describe, it, vi, afterEach, beforeEach, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import App from './App.vue'
 import { createTestingPinia } from '@pinia/testing'
-import { useBlackJack } from './store'
-import { findByText } from '../test/helpers.ts'
-import { testCards, testCardIds } from '../test/testData.ts'
+import { mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-let errorSpy: any
-let logSpy: any
+import { findByText } from '../test/helpers.ts'
+import { testCardIds, testCards } from '../test/testData.ts'
+import App from './App.vue'
+import { useBlackJack } from './store'
+
+let errorSpy: unknown
+let logSpy: unknown
 
 /***
  * The whole point of having storybook is being able to import the stories as

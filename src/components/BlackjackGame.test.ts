@@ -1,13 +1,14 @@
-import BlackjackGame from './BlackjackGame.vue'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import { useBlackJack } from '../store'
+import { mount } from '@vue/test-utils'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
-import { findByText } from '../../test/helpers.ts'
 
-let errorSpy: any
-let logSpy: any
+import { findByText } from '../../test/helpers.ts'
+import { useBlackJack } from '../store'
+import BlackjackGame from './BlackjackGame.vue'
+
+let errorSpy: unknown
+let logSpy: unknown
 
 describe('<BlackjackGame.vue />', () => {
   beforeEach(() => {
@@ -23,7 +24,7 @@ describe('<BlackjackGame.vue />', () => {
     stubActions: false,
     createSpy: vi.fn
   })
-  let wrapper = mount(BlackjackGame, {
+  const wrapper = mount(BlackjackGame, {
     global: {
       plugins: [pinia]
     }

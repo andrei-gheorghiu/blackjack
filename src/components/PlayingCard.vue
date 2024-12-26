@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useBlackJack } from '../store'
-import CardSymbol from './CardSymbol.vue'
-import CardPattern from './CardPattern.vue'
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
+
+import { useBlackJack } from '../store'
+import CardPattern from './CardPattern.vue'
+import CardSymbol from './CardSymbol.vue'
 
 const props = defineProps({
   uuid: {

@@ -1,12 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import type { CARD_COLOR, CARD_NAME } from './types'
-import App from './App.vue'
+
 import { StorybookDecorator } from '../.storybook/helpers.ts'
+import App from './App.vue'
+import type { CARD_COLOR, CARD_NAME } from './types'
 
 const meta = {
   title: 'App',
   component: App,
-  decorators: [StorybookDecorator as any]
+  // @ts-expect-error it's ok
+  decorators: [StorybookDecorator]
 } satisfies Meta<typeof App>
 
 export default meta

@@ -1,4 +1,4 @@
-export * from './BlackjackCard'
 export * from './blackjack-player'
-export * from './PlayingCard'
+export * from './BlackjackCard'
 export * from './playing-card'
+export * from './PlayingCard'
