@@ -7,38 +7,38 @@ import { testCardIds, testCards } from '../test/testData.ts'
 import App from './App.vue'
 import { BlackjackPlayer } from './types'
 
-const renderApp = (cardIds: string[]) => {
-  const pinia = createTestingPinia({
-    stubActions: false,
-    createSpy: vi.fn,
-    initialState: {
-      blackjack: {
-        cards: testCards,
-        cardIds,
-        players: [
-          new BlackjackPlayer({
-            name: 'Player 1',
-            hands: [[cardIds[0], cardIds[1]]]
-          }),
-          new BlackjackPlayer({
-            name: 'Dealer',
-            hands: [[cardIds[2], cardIds[3]]],
-            isDealer: true
-          })
-        ],
-        decks: 1
-      },
-      animations: {
-        positions: {}
-      }
-    }
+const renderApp = (cardIds: string[]) =>
+  mount(App, {
+    plugins: [
+      createTestingPinia({
+        stubActions: false,
+        createSpy: vi.fn,
+        initialState: {
+          blackjack: {
+            cards: testCards,
+            cardIds,
+            players: [
+              new BlackjackPlayer({
+                name: 'Player 1',
+                hands: [[cardIds[0], cardIds[1]]]
+              }),
+              new BlackjackPlayer({
+                name: 'Dealer',
+                hands: [[cardIds[2], cardIds[3]]],
+                isDealer: true
+              })
+            ],
+            decks: 1
+          },
+          animations: {
+            positions: {}
+          }
+        }
+      })
+    ]
   })
-  return mount(App, {
-    plugins: [pinia]
-  })
-}
 
-describe('<App.vue />', () => {
+describe('Rendering', () => {
   useCleanConsole()
 
   it('should render', () => {
@@ -52,6 +52,10 @@ describe('<App.vue />', () => {
     })
     expect(wrapper).toBeTruthy()
   })
+})
+
+describe('Game results', () => {
+  useCleanConsole()
 
   it('should lose on dealer blackjack', async () => {
     const { C10, CJ, SA, SK, ...rest } = testCardIds
@@ -77,7 +81,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should draw when both blackjack', async () => {
+  it('should draw when both on blackjack', async () => {
     const { SA, SK, CA, CK, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, CA, CK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -101,7 +105,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Loss')
   })
 
-  it('should win when dealer busts', async () => {
+  it('should win when only dealer busts', async () => {
     const { SJ, S5, S2, CJ, C10, ...rest } = testCardIds
     const wrapper = renderApp([SJ, S5, S2, CJ, C10, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -116,6 +120,10 @@ describe('<App.vue />', () => {
 
     expect(wrapper.find('.game-result').text()).toBe('Draw')
   })
+})
+
+describe('Splitting', () => {
+  useCleanConsole()
 
   it('should split', async () => {
     const { SJ, C10, S2, S10, SA, S8, D8, ...rest } = testCardIds
@@ -132,9 +140,11 @@ describe('<App.vue />', () => {
     await findByText(/Split/, 'button', wrapper).trigger('click')
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
-    expect(wrapper.findAll('.game-result').map((item) => item.text())).toEqual([
-      'Win',
-      'Loss'
-    ])
+    const results = wrapper.findAll('.game-result')
+    // expect 2 hands
+    expect(results.length).toBe(2)
+
+    // expect a win and a loss, in that order
+    expect(results.map((item) => item.text())).toEqual(['Win', 'Loss'])
   })
 })
