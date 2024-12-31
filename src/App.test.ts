@@ -141,10 +141,8 @@ describe('Splitting', () => {
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     const results = wrapper.findAll('.game-result')
-    // expect 2 hands
-    expect(results.length).toBe(2)
 
-    // expect a win and a loss, in that order
+    expect(results.length).toBe(2)
     expect(results.map((item) => item.text())).toEqual(['Win', 'Loss'])
   })
 })
