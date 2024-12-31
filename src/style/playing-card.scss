@@ -1,7 +1,11 @@
 .playing-card {
-  @apply cursor-pointer overflow-visible relative text-black font-bold;
-  @apply -mr-[.75rem] -ml-[.75rem] sm:w-14 w-10;
-  @apply md:-mr-[1.5rem] md:-ml-[1.5rem] md:w-20 box-content;
+  @apply overflow-visible relative text-black font-bold pointer-events-none select-none;
+  @apply -mr-[.75rem] -ml-[.75rem] w-10;
+  @apply sm:-mr-[1.2rem] sm:-ml-[1.2rem] sm:w-14;
+  @apply md:-mr-[1.4rem] md:-ml-[1.4rem] md:w-16 box-content;
+  .split & {
+    @apply -mr-[1.2rem] -ml-[1.2rem] w-14;
+  }
   @apply transform rotate-[var(--angle)] shadow-card;
   .HEARTS, .DIAMONDS {
     @apply text-red-700;
@@ -25,7 +29,10 @@
       }
       &:last-child {
         @apply absolute inset-0 flex items-center justify-center text-[3rem] leading-4 mt-3 md:mt-2;
-        @apply sm:text-[4.5rem] md:text-[6rem];
+        @apply sm:text-[4.5rem] md:text-[5rem];
+        .split & {
+          @apply text-[4.5rem];
+        }
       }
     }
   }

@@ -25,6 +25,6 @@ export const CardColors = Object.freeze({
   CLUBS: '♣'
 })
 export const CARD_COLORS = Object.keys(CardColors) as CARD_COLOR[]
-export const CARD_SYMBOLS = Object.values(CardColors)
+export const COLOR_SYMBOLS = Object.values(CardColors)
 
-export const DECK_LENGTH = CARD_SYMBOLS.length * NAME_SYMBOLS.length
+export const DECK_LENGTH = COLOR_SYMBOLS.length * NAME_SYMBOLS.length

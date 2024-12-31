@@ -1,9 +1,5 @@
-import {
-  BlackjackCard,
-  CARD_COLORS,
-  CARD_NAMES,
-  NAME_SYMBOL
-} from '../src/types'
+import { CARD_COLORS, CARD_NAMES, CardNames } from '../src/constants'
+import { BlackjackCard } from '../src/types'
 
 const ids = [
   '4dbec547-213e-4b23-85de-0a145b00b22a',
@@ -74,6 +70,6 @@ export const testCards = CARD_COLORS.map((color, colorIdx) =>
 export const testCardIds = Object.assign(
   {},
   ...testCards.map((card) => ({
-    [card.color[0] + NAME_SYMBOL[card.name]]: card.id
+    [card.color[0] + CardNames[card.name]]: card.id
   }))
 )

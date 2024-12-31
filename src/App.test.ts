@@ -1,72 +1,45 @@
 import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { findByText } from '../test/helpers.ts'
+import { findByText, useCleanConsole } from '../test/helpers.ts'
 import { testCardIds, testCards } from '../test/testData.ts'
 import App from './App.vue'
-import { useBlackJack } from './store'
-
-let errorSpy: unknown
-let logSpy: unknown
-
-/***
- * The whole point of having storybook is being able to import the stories as
- * components in the tests (already having the proper state) and testing them
- * However, storybook doesn't yet have a solid integration with vitest;
- * They have a prototype, I've tried it, but it's still a w.i.p. and
- * I couldn't make it work, given the time.
- *
- * Instead, I'll just recreate here what I've done in storybook
- *
- * As an example, here's how a storybook test would look like:
-
- describe('Draw blackjack.ts', async () => {
- const wrapper = mount(DrawBlackjack())
- await findByText(/Stand/, 'button', wrapper).trigger('click')
-
- expect(wrapper.find('.game-result').text()).toBe('Draw')
- })
-
- ***/
+import { BlackjackPlayer } from './types'
 
 const renderApp = (cardIds: string[]) => {
   const pinia = createTestingPinia({
     stubActions: false,
-    createSpy: vi.fn
+    createSpy: vi.fn,
+    initialState: {
+      blackjack: {
+        cards: testCards,
+        cardIds,
+        players: [
+          new BlackjackPlayer({
+            name: 'Player 1',
+            hands: [[cardIds[0], cardIds[1]]]
+          }),
+          new BlackjackPlayer({
+            name: 'Dealer',
+            hands: [[cardIds[2], cardIds[3]]],
+            isDealer: true
+          })
+        ],
+        decks: 1
+      },
+      animations: {
+        positions: {}
+      }
+    }
   })
-  const wrapper = mount(App, {
+  return mount(App, {
     plugins: [pinia]
   })
-  const store = useBlackJack(pinia)
-  store.$patch({
-    cards: testCards,
-    cardIds,
-    players: [
-      {
-        name: 'Player 1',
-        cards: [cardIds[0], cardIds[1]]
-      },
-      {
-        name: 'Dealer',
-        cards: [cardIds[2], cardIds[3]],
-        isDealer: true
-      }
-    ]
-  })
-  return wrapper
 }
 
 describe('<App.vue />', () => {
-  beforeEach(() => {
-    errorSpy = vi.spyOn(console, 'error')
-    logSpy = vi.spyOn(console, 'log')
-  })
-  afterEach(() => {
-    expect(errorSpy).not.toHaveBeenCalled()
-    expect(logSpy).not.toHaveBeenCalled()
-    vi.restoreAllMocks()
-  })
+  useCleanConsole()
 
   it('should render', () => {
     const wrapper = mount(App, {
@@ -80,7 +53,7 @@ describe('<App.vue />', () => {
     expect(wrapper).toBeTruthy()
   })
 
-  it('should lose on dealer blackjack.ts', async () => {
+  it('should lose on dealer blackjack', async () => {
     const { C10, CJ, SA, SK, ...rest } = testCardIds
     const wrapper = renderApp([C10, CJ, SA, SK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -88,7 +61,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Loss')
   })
 
-  it('should win on player blackjack.ts', async () => {
+  it('should win on player blackjack', async () => {
     const { SA, SK, C10, CJ, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, C10, CJ, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -96,7 +69,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should win on player blackjack.ts, even with dealer on 21', async () => {
+  it('should win on player blackjack, even with dealer on 21', async () => {
     const { SA, SK, C10, C6, H5, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, C10, C6, H5, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -104,7 +77,7 @@ describe('<App.vue />', () => {
     expect(wrapper.find('.game-result').text()).toBe('Win')
   })
 
-  it('should draw when both blackjack.ts', async () => {
+  it('should draw when both blackjack', async () => {
     const { SA, SK, CA, CK, ...rest } = testCardIds
     const wrapper = renderApp([SA, SK, CA, CK, ...Object.values(rest)])
     await findByText(/Stand/, 'button', wrapper).trigger('click')
@@ -142,5 +115,26 @@ describe('<App.vue />', () => {
     await findByText(/Stand/, 'button', wrapper).trigger('click')
 
     expect(wrapper.find('.game-result').text()).toBe('Draw')
+  })
+
+  it('should split', async () => {
+    const { SJ, C10, S2, S10, SA, S8, D8, ...rest } = testCardIds
+    const wrapper = renderApp([
+      SJ,
+      C10,
+      S2,
+      S10,
+      SA,
+      S8,
+      D8,
+      ...Object.values(rest)
+    ])
+    await findByText(/Split/, 'button', wrapper).trigger('click')
+    await findByText(/Stand/, 'button', wrapper).trigger('click')
+
+    expect(wrapper.findAll('.game-result').map((item) => item.text())).toEqual([
+      'Win',
+      'Loss'
+    ])
   })
 })

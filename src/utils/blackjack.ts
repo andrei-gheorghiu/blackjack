@@ -1,4 +1,4 @@
-import { BLACKJACK_CARD_VALUES, MAX_HAND_VALUE } from '../constants'
+import { BLACKJACK_CARD_VALUES, BLACKJACK_MAX_HAND_VALUE } from '../constants'
 import { BlackjackCard, CARD_NAME } from '../types'
 
 export const getBlackjackValues = (name: CARD_NAME) =>
@@ -15,7 +15,10 @@ export const getHandValues = (cards: BlackjackCard[]) =>
 
 export const getHandValue = (cards: BlackjackCard[]) => {
   const totals = getHandValues(cards)
-  return totals.find((t) => t <= MAX_HAND_VALUE) || totals[totals.length - 1]
+  return (
+    totals.find((t) => t <= BLACKJACK_MAX_HAND_VALUE) ||
+    totals[totals.length - 1]
+  )
 }
 
 export function shuffle<T>(array: T[]): T[] {

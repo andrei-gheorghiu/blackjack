@@ -1,25 +1,14 @@
 import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 
-import { findByText } from '../../test/helpers.ts'
+import { findByText, useCleanConsole } from '../../test/helpers.ts'
 import { useBlackJack } from '../store'
 import BlackjackGame from './BlackjackGame.vue'
 
-let errorSpy: unknown
-let logSpy: unknown
-
 describe('<BlackjackGame.vue />', () => {
-  beforeEach(() => {
-    errorSpy = vi.spyOn(console, 'error')
-    logSpy = vi.spyOn(console, 'log')
-  })
-  afterEach(() => {
-    expect(errorSpy).not.toHaveBeenCalled()
-    expect(logSpy).not.toHaveBeenCalled()
-    vi.restoreAllMocks()
-  })
+  useCleanConsole()
   const pinia = createTestingPinia({
     stubActions: false,
     createSpy: vi.fn

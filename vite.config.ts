@@ -14,8 +14,7 @@ export default defineConfig({
       exclude: [
         ...(vitestConfig.coverage.exclude || []),
         '**/*.config.js',
-        '**/main.ts',
-        '**/*.story.ts'
+        '**/main.ts'
       ]
     },
     setupFiles: [resolve(__dirname, 'test/setup.ts')],

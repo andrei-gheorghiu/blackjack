@@ -15,20 +15,18 @@ export const BLACKJACK_CARD_VALUES: Map<CARD_NAME, number[]> = new Map([
   ['QUEEN', [10]],
   ['KING', [10]]
 ])
-
-export const MAX_HAND_VALUE = 21
-export const MIN_HAND_LENGTH = 2
-export const MIN_DEALER_VALUE = 17
-export const DECKS = 1
-export const DEALER = {
+export const BLACKJACK_MAX_HAND_VALUE = 21
+export const BLACKJACK_MIN_HAND_LENGTH = 2
+export const BLACKJACK_MIN_DEALER_VALUE = 17
+export const BLACKJACK_DECKS = 4
+export const BLACKJACK_DEALER = {
   name: 'Dealer',
-  cards: [],
   isDealer: true
 }
-export const DEFAULT_STATE = {
+export const BLACKJACK_DEFAULT_STATE = {
   cards: [],
   cardIds: [],
-  decks: DECKS,
+  decks: BLACKJACK_DECKS,
   currentPlayerIndex: 0,
   hasGameEnded: false
 }

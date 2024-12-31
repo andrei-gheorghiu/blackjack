@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia'
 
 import {
+  BLACKJACK_DEALER,
+  BLACKJACK_DEFAULT_STATE,
+  BLACKJACK_MAX_HAND_VALUE,
+  BLACKJACK_MIN_DEALER_VALUE,
+  BLACKJACK_MIN_HAND_LENGTH,
   CARD_COLORS,
   CARD_NAMES,
-  DEALER,
-  DECK_LENGTH,
-  DEFAULT_STATE,
-  MAX_HAND_VALUE,
-  MIN_DEALER_VALUE,
-  MIN_HAND_LENGTH
+  DECK_LENGTH
 } from '../constants'
 import { BlackjackCard, BlackjackPlayer } from '../types'
-import { getHandValue, getHandValues, shuffle } from '../utils'
+import { getHandValue, shuffle } from '../utils'
 
 export interface BlackjackState {
   cards: BlackjackCard[]
@@ -22,24 +22,24 @@ export interface BlackjackState {
   hasGameEnded: boolean
 }
 
-export const useBlackJack = defineStore('blackjack.ts', {
+export const useBlackJack = defineStore('blackjack', {
   state: (): BlackjackState => ({
-    ...DEFAULT_STATE,
+    ...BLACKJACK_DEFAULT_STATE,
     players: [
       {
-        name: 'Player 1',
-        cards: []
+        name: 'Player 1'
       },
       {
-        name: 'Player 2',
-        cards: []
+        name: 'Player 2'
       },
       {
-        name: 'Player 3',
-        cards: []
+        name: 'Player 3'
       },
-      DEALER
-    ]
+      {
+        name: 'Player 4'
+      },
+      BLACKJACK_DEALER
+    ].map((data) => new BlackjackPlayer(data))
   }),
   actions: {
     generateCards() {
@@ -56,12 +56,20 @@ export const useBlackJack = defineStore('blackjack.ts', {
         })
       })
     },
+    splitHand() {
+      this.currentPlayer.splitHand()
+      this.currentPlayer.hand.push(this.nextCardId)
+      this.currentPlayer.hands[this.currentPlayer.currentHandIndex + 1].push(
+        this.nextCardId
+      )
+      this.checkHand()
+    },
     getCard(uuid: string) {
       return this.cards.find(({ id }) => uuid === id) as BlackjackCard
     },
     reset() {
-      this.players.forEach((p) => (p.cards = []))
-      Object.assign(this, { ...DEFAULT_STATE })
+      this.players.forEach((p) => p.reset())
+      Object.assign(this, { ...BLACKJACK_DEFAULT_STATE })
     },
     newGame(decks?: number) {
       this.reset()
@@ -78,41 +86,59 @@ export const useBlackJack = defineStore('blackjack.ts', {
       this.cardIds = shuffle(this.cards.map(({ id }) => id))
     },
     dealCard() {
-      this.currentPlayer.cards.push(this.nextCardId)
+      this.currentPlayer.hand.push(this.nextCardId)
       if (this.isDealing) {
         this.advanceTurn()
         this.dealCard()
       } else {
         if (this.currentPlayer.isDealer) {
           if (this.hasGameEnded) {
-            if (!this.isBusted(this.currentPlayer)) {
+            if (!this.handIsBusted(this.dealer.hand)) {
               this.playDealerTurn()
             }
           } else {
             this.advanceTurn()
           }
         } else {
-          if (this.isBusted(this.currentPlayer)) this.advanceTurn()
+          this.checkHand()
         }
       }
     },
+    checkHand() {
+      if (
+        this.handIsBusted(this.currentPlayer.hand) ||
+        this.handHasMaxValue(this.currentPlayer.hand)
+      ) {
+        this.advanceTurn()
+      }
+    },
     advanceTurn() {
-      this.currentPlayerIndex =
-        (this.players.length + this.currentPlayerIndex + 1) %
-        this.players.length
+      if (
+        this.currentPlayer.hands.length - 1 >
+        this.currentPlayer.currentHandIndex
+      ) {
+        this.currentPlayer.currentHandIndex += 1
+      } else {
+        this.currentPlayerIndex =
+          (this.players.length + this.currentPlayerIndex + 1) %
+          this.players.length
+      }
 
       if (this.currentPlayer.isDealer) {
         if (!this.isDealing) {
+          this.hasGameEnded = true
           this.playDealerTurn()
         }
-      } else if (this.hasBlackjack(this.currentPlayer)) {
+      } else if (this.handHasBlackjack(this.currentPlayer.hand)) {
         this.advanceTurn()
       }
     },
     playDealerTurn() {
-      const totals = getHandValues(this.currentPlayer.cards.map(this.getCard))
-      this.hasGameEnded = true
-      if (!totals.filter((t) => t >= MIN_DEALER_VALUE).length) {
+      const value = this.getPlayerHandValue(this.dealer.hand)
+      if (
+        value < BLACKJACK_MIN_DEALER_VALUE &&
+        !(value > BLACKJACK_MAX_HAND_VALUE)
+      ) {
         this.dealCard()
       }
     }
@@ -125,19 +151,19 @@ export const useBlackJack = defineStore('blackjack.ts', {
       return (p: BlackjackPlayer): boolean =>
         p.name === this.currentPlayer?.name
     },
-    isBusted() {
-      return (player: BlackjackPlayer): boolean =>
-        getHandValue(player.cards.map(useBlackJack().getCard)) > MAX_HAND_VALUE
+    handIsBusted() {
+      return (hand: string[]): boolean =>
+        getHandValue(this.getHandCards(hand)) > BLACKJACK_MAX_HAND_VALUE
     },
     dealtCardIds(): string[] {
-      return this.players.map((player) => player.cards).flat()
+      return this.players.map((player) => player.allCards).flat()
     },
     nextCardId(): string {
       return this.cardIds.filter((id) => !this.dealtCardIds.includes(id))[0]
     },
     isDealing(): boolean {
       return this.players.some(
-        (player) => player.cards.length < MIN_HAND_LENGTH
+        (player) => player.hand.length < BLACKJACK_MIN_HAND_LENGTH
       )
     },
     dealer(): BlackjackPlayer {
@@ -145,43 +171,43 @@ export const useBlackJack = defineStore('blackjack.ts', {
     },
     isCardTurned() {
       return (cardId: string): boolean =>
-        this.currentPlayer.cards.includes(cardId) ||
-        this.dealer.cards.findIndex((id) => id === cardId) > 0
+        this.dealer.hand[0] !== cardId || !this.dealtCardIds.includes(cardId)
     },
     gameResult() {
-      const dealerHand = this.getPlayerCards(this.dealer)
-      return (p: BlackjackPlayer): string => {
-        const playerHand = this.getPlayerCards(p)
+      const dealerValue = this.getPlayerHandValue(this.dealer.hand)
+      return (cards: string[]): string => {
+        const playerValue = this.getPlayerHandValue(cards)
         switch (true) {
-          case getHandValue(playerHand) > MAX_HAND_VALUE:
-          case getHandValue(dealerHand) <= MAX_HAND_VALUE &&
-            getHandValue(playerHand) < getHandValue(dealerHand):
-          case this.hasBlackjack(this.dealer) && !this.hasBlackjack(p):
+          case playerValue > BLACKJACK_MAX_HAND_VALUE:
+          case dealerValue <= BLACKJACK_MAX_HAND_VALUE &&
+            playerValue < dealerValue:
+          case this.handHasBlackjack(this.dealer.hand) &&
+            !this.handHasBlackjack(cards):
             return 'Loss'
-          case this.hasBlackjack(p) && !this.hasBlackjack(this.dealer):
+          case this.handHasBlackjack(cards) &&
+            !this.handHasBlackjack(this.dealer.hand):
             return 'Win'
-          case getHandValue(playerHand) === getHandValue(dealerHand):
+          case playerValue === dealerValue:
             return 'Draw'
           default:
             return 'Win'
         }
       }
     },
-    getPlayerCards() {
-      return (p: BlackjackPlayer): BlackjackCard[] =>
-        p.cards.map(useBlackJack().getCard)
+    getHandCards() {
+      return (hand: string[]): BlackjackCard[] =>
+        hand.map(useBlackJack().getCard)
     },
-    hasMaxHandValue() {
-      return (p: BlackjackPlayer): boolean =>
-        this.getPlayerHandValue(p) === MAX_HAND_VALUE
+    handHasMaxValue() {
+      return (hand: string[]): boolean =>
+        this.getPlayerHandValue(hand) === BLACKJACK_MAX_HAND_VALUE
     },
-    hasBlackjack() {
-      return (p: BlackjackPlayer): boolean =>
-        p.cards.length === 2 && this.hasMaxHandValue(p)
+    handHasBlackjack() {
+      return (hand: string[]): boolean =>
+        hand.length === 2 && this.handHasMaxValue(hand)
     },
     getPlayerHandValue() {
-      return (p: BlackjackPlayer): number =>
-        getHandValue(this.getPlayerCards(p))
+      return (hand: string[]): number => getHandValue(this.getHandCards(hand))
     }
   }
 })
