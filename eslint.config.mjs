@@ -26,7 +26,11 @@ export default [
     rules: {
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      ...eslintPluginPrettierRecommended.rules
+      ...eslintPluginPrettierRecommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { varsIgnorePattern: "[iI]gnored" }
+      ]
     }
   }
 ]

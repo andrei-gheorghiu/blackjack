@@ -26,18 +26,9 @@ export const useBlackJack = defineStore('blackjack', {
   state: (): BlackjackState => ({
     ...BLACKJACK_DEFAULT_STATE,
     players: [
-      {
-        name: 'Player 1'
-      },
-      {
-        name: 'Player 2'
-      },
-      {
-        name: 'Player 3'
-      },
-      {
-        name: 'Player 4'
-      },
+      ...Array.from({ length: 4 }).map((_, index) => ({
+        name: `Player ${index + 1}`
+      })),
       BLACKJACK_DEALER
     ].map((data) => new BlackjackPlayer(data))
   }),
@@ -105,10 +96,7 @@ export const useBlackJack = defineStore('blackjack', {
       }
     },
     checkHand() {
-      if (
-        this.handIsBusted(this.currentPlayer.hand) ||
-        this.handHasMaxValue(this.currentPlayer.hand)
-      ) {
+      if (this.handIsBusted() || this.handHasMaxValue()) {
         this.advanceTurn()
       }
     },
@@ -129,7 +117,7 @@ export const useBlackJack = defineStore('blackjack', {
           this.hasGameEnded = true
           this.playDealerTurn()
         }
-      } else if (this.handHasBlackjack(this.currentPlayer.hand)) {
+      } else if (this.handHasBlackjack()) {
         this.advanceTurn()
       }
     },
@@ -152,7 +140,7 @@ export const useBlackJack = defineStore('blackjack', {
         p.name === this.currentPlayer?.name
     },
     handIsBusted() {
-      return (hand: string[]): boolean =>
+      return (hand = useBlackJack().currentPlayer.hand): boolean =>
         getHandValue(this.getHandCards(hand)) > BLACKJACK_MAX_HAND_VALUE
     },
     dealtCardIds(): string[] {
@@ -199,11 +187,11 @@ export const useBlackJack = defineStore('blackjack', {
         hand.map(useBlackJack().getCard)
     },
     handHasMaxValue() {
-      return (hand: string[]): boolean =>
+      return (hand = useBlackJack().currentPlayer.hand): boolean =>
         this.getPlayerHandValue(hand) === BLACKJACK_MAX_HAND_VALUE
     },
     handHasBlackjack() {
-      return (hand: string[]): boolean =>
+      return (hand = useBlackJack().currentPlayer.hand): boolean =>
         hand.length === 2 && this.handHasMaxValue(hand)
     },
     getPlayerHandValue() {

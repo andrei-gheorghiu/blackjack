@@ -145,4 +145,36 @@ describe('Splitting', () => {
     expect(results.length).toBe(2)
     expect(results.map((item) => item.text())).toEqual(['Win', 'Loss'])
   })
+  it('should limit to three splits', async () => {
+    const { SJ, S10, S2, S9, DK, DQ, CQ, CA, CK, DA, C10, ...rest } =
+      testCardIds
+    const wrapper = renderApp([
+      SJ,
+      S10,
+      S2,
+      S9,
+      DK,
+      DQ,
+      CQ,
+      CA,
+      CK,
+      DA,
+      C10,
+      ...Object.values(rest)
+    ])
+
+    for (const _ignored of Array.from({ length: 3 })) {
+      await findByText(/Split/, 'button', wrapper).trigger('click')
+    }
+    expect(findByText(/Split/, 'button', wrapper)).not.toBeDefined()
+    for (const _ignored of Array.from({ length: 2 })) {
+      await findByText(/Stand/, 'button', wrapper).trigger('click')
+    }
+    expect(wrapper.findAll('.game-result').map((item) => item.text())).toEqual([
+      'Loss',
+      'Win',
+      'Win',
+      'Loss'
+    ])
+  })
 })

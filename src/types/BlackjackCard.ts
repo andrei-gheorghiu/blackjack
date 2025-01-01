@@ -5,6 +5,6 @@ export class BlackjackCard extends PlayingCard {
   values: number[]
   constructor(data: IPlayingCard | BlackjackCard) {
     super(data)
-    this.values = getBlackjackValues(this.name) || []
+    this.values = getBlackjackValues(this.name)
   }
 }

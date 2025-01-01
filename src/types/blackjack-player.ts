@@ -14,7 +14,7 @@ export class BlackjackPlayer implements IBlackjackPlayer {
   }
 
   get hand() {
-    return this.hands[this.currentHandIndex] || []
+    return this.hands[this.currentHandIndex]
   }
 
   get allCards() {

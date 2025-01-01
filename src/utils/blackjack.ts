@@ -2,7 +2,7 @@ import { BLACKJACK_CARD_VALUES, BLACKJACK_MAX_HAND_VALUE } from '../constants'
 import { BlackjackCard, CARD_NAME } from '../types'
 
 export const getBlackjackValues = (name: CARD_NAME) =>
-  BLACKJACK_CARD_VALUES.get(name)
+  BLACKJACK_CARD_VALUES.get(name) || []
 
 export const getHandValues = (cards: BlackjackCard[]) =>
   cards
